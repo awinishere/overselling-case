@@ -15,6 +15,8 @@ public class ProductService {
 
     @Transactional
     public boolean purchaseUnsafe(Long productId, Integer quantity){
+        validateQuantity(quantity);
+
         log.info("Processing unsafe purchases for ID products: {}, amount: {}", productId, quantity);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> {
@@ -40,6 +42,8 @@ public class ProductService {
 
     @Transactional
     public boolean purchaseSafe(Long productId, Integer quantity){
+        validateQuantity(quantity);
+
         log.info("Processing safe purchase for product ID: {}, quantity: {}", productId, quantity);
         Product product = productRepository.findByIdWithPessimisticLock(productId)
                 .orElseThrow(() -> {
@@ -61,5 +65,12 @@ public class ProductService {
         }
         log.warn("Insufficient stock of product {} Stock: {}, Requested: {}", productId, product.getStock(), quantity);
         return false;
+    }
+
+    private void validateQuantity(Integer quantity){
+        if (quantity == null || quantity == 0){
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+        }
+
     }
 }
