@@ -17,7 +17,6 @@ public class ProductService {
     public boolean purchaseUnsafe(Long productId, Integer quantity){
         validateQuantity(quantity);
 
-        log.info("Processing unsafe purchases for ID products: {}, amount: {}", productId, quantity);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> {
                     log.error("Produk ID {} not found", productId);
@@ -33,7 +32,6 @@ public class ProductService {
 
             product.setStock(product.getStock() - quantity);
             productRepository.save(product);
-            log.info("Unsafe purchase successful. Remaining stock: {}", product.getStock());
             return true;
         }
         log.warn("Insufficient stock of product {}. Stock: {}, Requested: {}", productId, product.getStock(), quantity);
@@ -44,7 +42,6 @@ public class ProductService {
     public boolean purchaseSafe(Long productId, Integer quantity){
         validateQuantity(quantity);
 
-        log.info("Processing safe purchase for product ID: {}, quantity: {}", productId, quantity);
         Product product = productRepository.findByIdWithPessimisticLock(productId)
                 .orElseThrow(() -> {
                     log.error("Produk ID {} not found", productId);
@@ -60,7 +57,6 @@ public class ProductService {
 
             product.setStock(product.getStock() - quantity);
             productRepository.save(product);
-            log.info("Safe purchase successful. Remaining stock: {}", product.getStock());
             return true;
         }
         log.warn("Insufficient stock of product {} Stock: {}, Requested: {}", productId, product.getStock(), quantity);
