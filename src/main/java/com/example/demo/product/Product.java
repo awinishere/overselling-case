@@ -1,45 +1,27 @@
 package com.example.demo.product;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
+    @Column(name = "name", updatable = true, nullable = false)
     private String name;
 
+    @Column(name = "stock", updatable = true, nullable = false)
     private Integer stock;
-
-    public Product() {
-
-    }
-
-    public Product(Long id, String name, Integer stock) {
-        this.id = id;
-        this.name = name;
-        this.stock = stock;
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-     this.name = name;
-    }
-    public Integer getStock() {
-        return stock;
-    }
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
 }
