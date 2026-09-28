@@ -1,7 +1,5 @@
 package com.example.demo.product;
 
-import com.example.demo.domain.Product;
-import com.example.demo.domain.percentage.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

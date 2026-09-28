@@ -1,7 +1,5 @@
 package com.example.demo.product;
 
-import com.example.demo.domain.Product;
-import com.example.demo.domain.percentage.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
