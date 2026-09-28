@@ -1,7 +1,5 @@
 package com.example.demo.product;
 
-import com.example.demo.domain.Product;
-import com.example.demo.domain.percentage.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,8 @@ public class ProductService {
 
     @Transactional
     public boolean purchaseUnsafe(Long productId, Integer quantity){
-        log.info("Processing unsafe purchases for ID products: {}, amount: {}", productId, quantity);
+        validateQuantity(quantity);
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> {
                     log.error("Produk ID {} not found", productId);
@@ -33,7 +32,6 @@ public class ProductService {
 
             product.setStock(product.getStock() - quantity);
             productRepository.save(product);
-            log.info("Unsafe purchase successful. Remaining stock: {}", product.getStock());
             return true;
         }
         log.warn("Insufficient stock of product {}. Stock: {}, Requested: {}", productId, product.getStock(), quantity);
@@ -42,7 +40,8 @@ public class ProductService {
 
     @Transactional
     public boolean purchaseSafe(Long productId, Integer quantity){
-        log.info("Processing safe purchase for product ID: {}, quantity: {}", productId, quantity);
+        validateQuantity(quantity);
+
         Product product = productRepository.findByIdWithPessimisticLock(productId)
                 .orElseThrow(() -> {
                     log.error("Produk ID {} not found", productId);
@@ -58,10 +57,16 @@ public class ProductService {
 
             product.setStock(product.getStock() - quantity);
             productRepository.save(product);
-            log.info("Safe purchase successful. Remaining stock: {}", product.getStock());
             return true;
         }
         log.warn("Insufficient stock of product {} Stock: {}, Requested: {}", productId, product.getStock(), quantity);
         return false;
+    }
+
+    private void validateQuantity(Integer quantity){
+        if (quantity == null || quantity == 0){
+            throw new IllegalArgumentException("Quantity must be greater than zero");
+        }
+
     }
 }
